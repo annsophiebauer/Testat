@@ -1,0 +1,81 @@
+---
+title: "Testat SNA"
+author: "Ann-Sophie Bauer,ab288"
+date: "Sommersemester 21/22"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+    toc_depth: 3
+    number_sections: yes
+subtitle: "VFB Kader"
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(igraph)
+```
+# Daten und Codebuch
+
+Die Daten und das Codebuch sind in meinem
+[annsophiebauer](https://github.com/annsophiebauer/Testat)
+hinterlegt.
+
+**Edge-Attribute** 
+
+# Codebuch				
+## Edgelist	
+
+from:	vorheriger Verein/Rückennummer
+
+to:	Rückennummer/Nationalität	
+
+weight: Transfersumme in Hundertausend Euro gerundet
+
+season:	Transferfenster = Transferjahr zum VFB
+
+**Node-Attribute**
+
+## Nodelist	
+
+id:Rückennummer Spieler/Abkürzung Verein/Abkürzung Nationalität
+
+name: Name Spieler/Verein/Land			
+
+country: Nationalität Spieler/Land Transferverein
+
+type: 1=Spieler, 2=Verein
+
+
+## Netzwerk einlesen
+```{r Gesamnetzwerk erstellen, echo=FALSE}
+
+library(igraph)
+
+# Einlesen der Edge- und Nodelist
+el <- read.csv("https://raw.githubusercontent.com/annsophiebauer/Testat/main/eges.csv", header=T, as.is=T, sep = ",")
+nodes <- read.csv("https://raw.githubusercontent.com/annsophiebauer/Testat/main/nodes.csv", header=T, as.is=T, sep = ",")
+
+# Matrix erstellen
+edgematrix <-as.matrix(el)
+
+# Zusammenführen von Edge- und Nodelist als igraph-Objekt s
+vfb <- graph_from_data_frame(d=edgematrix, directed=F)
+vfb
+```
+
+```{r Einfache Visualisierung des erstellten Objekt, fig.height=7, fig.width=9}
+
+plot(vfb,
+     asp=0,
+     layout=layout_nicely,
+     rescale=TRUE,
+     vertex.size=degree(vfb)*2,
+     vertex.frame.color= "black",
+     vertex.color="pink",
+     edge.color="black",
+     edge.size=.2,
+     main ="Transfer VfB 21/22",
+     sub= "visualisierung nach Nationalität")
+
+
+```
